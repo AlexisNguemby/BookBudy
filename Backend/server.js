@@ -1,56 +1,29 @@
-// Connexion à la base de données
-require('./app/config/Database');
-
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+require('dotenv').config();
+const mongoose = require('mongoose');
+
+const authRoutes = require('./app/routes/authRoutes');
+const bookRoutes = require('./app/routes/bookRoutes');
+
 const app = express();
-const User = require('./app/documents/User');
-const Book = require('./app/documents/Book');
 
-app.use(express.json()); // Pour parser le JSON
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:5173', // frontend URL
+  credentials: true
+}));
 
-// // Route pour créer un utilisateur
-// app.post('/users', async (req, res) => {
-//   try {
-//     const user = new User(req.body);
-//     await user.save();
-//     res.status(201).json(user);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/books', bookRoutes);  
 
-// // Route pour récupérer tous les utilisateurs
-// app.get('/users', async (req, res) => {
-//   try {
-//     const users = await User.find();
-//     res.json(users);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
-// // Route pour créer un livre
-// app.post('/books', async (req, res) => {
-//   try {
-//     const book = new Book(req.body);
-//     await book.save();
-//     res.status(201).json(book);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
-
-// // Route pour récupérer tous les livres
-// app.get('/books', async (req, res) => {
-//   try {
-//     const books = await Book.find();
-//     res.json(books);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
-// const PORT = 3000;
-// app.listen(PORT, () => {
-//   console.log(`Serveur démarré sur le port ${PORT}`);
-// });
+// MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('Connecté à MongoDB');
+    app.listen(5000, () => console.log('Serveur sur http://localhost:5000'));
+  })
+  .catch(err => console.error(err));
