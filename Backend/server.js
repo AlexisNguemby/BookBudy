@@ -5,19 +5,21 @@ const express = require('express');
 const app = express();
 const User = require('./app/documents/User');
 const Book = require('./app/documents/Book');
+const path = require('path');
+const cors = require('cors');
 
 app.use(express.json()); // Pour parser le JSON
 
-// // Route pour créer un utilisateur
-// app.post('/users', async (req, res) => {
-//   try {
-//     const user = new User(req.body);
-//     await user.save();
-//     res.status(201).json(user);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
+// Route pour créer un utilisateur
+app.post('/users', async (req, res) => {
+  try {
+    const user = new User(req.body);
+    await user.save();
+    res.status(201).json(user);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
 // // Route pour récupérer tous les utilisateurs
 // app.get('/users', async (req, res) => {
@@ -41,14 +43,14 @@ app.use(express.json()); // Pour parser le JSON
 // });
 
 // // Route pour récupérer tous les livres
-// app.get('/books', async (req, res) => {
-//   try {
-//     const books = await Book.find();
-//     res.json(books);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
+app.get('/books', async (req, res) => {
+  try {
+    const books = await Book.find();
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // const PORT = 3000;
 // app.listen(PORT, () => {
