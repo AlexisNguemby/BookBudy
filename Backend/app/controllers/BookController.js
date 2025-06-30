@@ -48,3 +48,41 @@ exports.getUserBooks = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };
+
+exports.updateBook = async (req, res) => {
+  const userId = req.user.id;
+  const bookId = req.params.id;
+  const { title, author, cover, status, pageCount, lastPageRead, category } = req.body;
+
+  if (!title || !author) {
+    return res.status(400).json({ message: 'Le titre et l\'auteur sont obligatoires.' });
+  }
+
+  try {
+    // Vérifier que le livre appartient à l'utilisateur
+    const book = await Book.findOne({ _id: bookId, userId });
+    if (!book) {
+      return res.status(404).json({ message: 'Livre non trouvé ou vous n\'avez pas l\'autorisation de le modifier.' });
+    }
+
+    // Mettre à jour le livre
+    const updatedBook = await Book.findByIdAndUpdate(
+      bookId,
+      {
+        title,
+        author,
+        cover: cover || book.cover,
+        status: status || book.status,
+        pageCount: pageCount || book.pageCount,
+        lastPageRead: lastPageRead || book.lastPageRead,
+        category: category || book.category,
+      },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({ message: 'Livre mis à jour avec succès', book: updatedBook });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Erreur serveur' });
+  }
+};

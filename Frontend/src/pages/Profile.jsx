@@ -182,6 +182,14 @@ export default function Profile() {
     }
   };
 
+  const handleBookUpdate = (updatedBook) => {
+    setBooks(prevBooks => 
+      prevBooks.map(book => 
+        book._id === updatedBook._id ? updatedBook : book
+      )
+    );
+  };
+
   if (error) return <p>{error}</p>;
   if (!profile) return <p>Chargement profil...</p>;
 
@@ -340,7 +348,7 @@ export default function Profile() {
       <h3>Ma collection de livres</h3>
       {books.length === 0 && <p>Pas encore de livres ajoutés.</p>}
       {books.map(book => (
-        <BookComponent key={book._id} book={book} />
+        <BookComponent key={book._id} book={book} onBookUpdate={handleBookUpdate} />
       ))}
 
       <button onClick={handleLogout}>Déconnexion</button>

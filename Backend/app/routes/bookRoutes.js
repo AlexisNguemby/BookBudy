@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const { protect } = require('../middlewares/authMiddleware');
-const { addBookToCollection, getUserBooks } = require('../controllers/bookController');
+const { addBookToCollection, getUserBooks, updateBook } = require('../controllers/BookController');
 
 router.post('/', protect, addBookToCollection);
 router.get('/', protect, getUserBooks); // get user books
+router.put('/:id', protect, updateBook); // update book
 
 module.exports = router;
