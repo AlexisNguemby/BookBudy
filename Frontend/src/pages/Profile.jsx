@@ -6,6 +6,13 @@ export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [books, setBooks] = useState([]);
   const [error, setError] = useState('');
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    email: '',
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -58,13 +65,94 @@ export default function Profile() {
     }
   };
 
-  // gestion du formulaire
+  // gestion du formulaire d'ajout de livre
   const handleChange = e => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
+
+  // gestion du formulaire de modification du profil
+  const handleEditChange = e => {
+    setEditFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleEditSubmit = async e => {
+    e.preventDefault();
+    setError(''); // Clear previous errors
+    
+    // Vérification que les mots de passe correspondent
+    if (editFormData.newPassword && editFormData.newPassword !== editFormData.confirmPassword) {
+      setError('Les nouveaux mots de passe ne correspondent pas');
+      return;
+    }
+
+    try {
+      const updateData = {};
+      
+      // Ajouter l'email s'il a été modifié
+      if (editFormData.email && editFormData.email !== profile.email) {
+        updateData.email = editFormData.email;
+      }
+      
+      // Ajouter les mots de passe s'ils sont fournis
+      if (editFormData.newPassword) {
+        if (!editFormData.currentPassword) {
+          setError('Le mot de passe actuel est requis pour modifier le mot de passe');
+          return;
+        }
+        updateData.currentPassword = editFormData.currentPassword;
+        updateData.newPassword = editFormData.newPassword;
+      }
+
+      // Vérifier qu'au moins une modification est demandée
+      if (Object.keys(updateData).length === 0) {
+        setError('Aucune modification détectée');
+        return;
+      }
+
+      const res = await fetch('http://localhost:5000/api/auth/profile', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Erreur lors de la mise à jour');
+      }
+
+      const data = await res.json();
+      setProfile(prev => ({ ...prev, ...data.user }));
+      setShowEditForm(false);
+      setEditFormData({
+        email: data.user.email,
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      setError('');
+      alert('Profil mis à jour avec succès !');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    if (profile) {
+      setEditFormData(prev => ({
+        ...prev,
+        email: profile.email
+      }));
+    }
+  }, [profile]);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -99,8 +187,90 @@ export default function Profile() {
 
   return (
     <div>
-      <h2>Profil de {profile.username}</h2>
-      <p>Email : {profile.email}</p>
+      <div>
+        <h2>Profil de {profile.username}</h2>
+        <p>Email : {profile.email}</p>
+      </div>
+      
+      <button 
+        onClick={() => setShowEditForm(!showEditForm)}
+      >
+        {showEditForm ? 'Annuler' : 'Modifier mes informations'}
+      </button>
+
+      {showEditForm && (
+        <div>
+          <h3>Modifier mes informations</h3>
+          <form onSubmit={handleEditSubmit}>
+            <div>
+              <label>Nouvel email (optionnel) :</label>
+              <input
+                type="email"
+                name="email"
+                placeholder={profile.email}
+                value={editFormData.email}
+                onChange={handleEditChange}
+              />
+            </div>
+
+            <div>
+              <label>Mot de passe actuel (requis pour changer le mot de passe) :</label>
+              <input
+                type="password"
+                name="currentPassword"
+                placeholder="Mot de passe actuel"
+                value={editFormData.currentPassword}
+                onChange={handleEditChange}
+              />
+            </div>
+
+            <div>
+              <label>Nouveau mot de passe (optionnel) :</label>
+              <input
+                type="password"
+                name="newPassword"
+                placeholder="Nouveau mot de passe"
+                value={editFormData.newPassword}
+                onChange={handleEditChange}
+              />
+            </div>
+
+            <div>
+              <label>Confirmer le nouveau mot de passe :</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirmer le nouveau mot de passe"
+                value={editFormData.confirmPassword}
+                onChange={handleEditChange}
+              />
+            </div>
+
+            <div>
+              <button type="submit">
+                Sauvegarder
+              </button>
+              <button 
+                type="button"
+                onClick={() => {
+                  setShowEditForm(false);
+                  setError('');
+                  setEditFormData({
+                    email: profile.email,
+                    currentPassword: '',
+                    newPassword: '',
+                    confirmPassword: ''
+                  });
+                }}
+              >
+                Annuler
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {error && <div>{error}</div>}
 
       <h3>Ajouter un livre</h3>
       <form onSubmit={handleSubmit} style={{ marginBottom: 30 }}>
