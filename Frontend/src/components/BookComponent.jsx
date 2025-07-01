@@ -43,7 +43,7 @@ export default function BookComponent({ book, onBookUpdate }) {
           <button
             onClick={handleEdit}
           >
-            ✏️ Modifier
+             Modifier
           </button>
         </div>
         
