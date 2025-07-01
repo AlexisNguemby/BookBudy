@@ -308,13 +308,12 @@ export default function Profile() {
           onChange={handleChange}
         />
         <br />
-        <input
-          type="text"
-          name="status"
-          placeholder="Statut"
-          value={formData.status}
-          onChange={handleChange}
-        />
+       <select name="status" value={formData.status} onChange={handleChange}>
+          <option value="">Sélectionner un statut</option>
+           <option value="A lire">A lire</option>
+          <option value="En cours">En cours</option>
+          <option value="Terminé">Terminé</option>  
+           </select>
         <br />
         <input
           type="number"
@@ -334,13 +333,14 @@ export default function Profile() {
           min="0"
         />
         <br />
-        <input
-          type="text"
-          name="category"
-          placeholder="Catégorie"
-          value={formData.category}
-          onChange={handleChange}
-        />
+       <select name="category" value={formData.category} onChange={handleChange}>
+          <option value="">Sélectionner une catégorie</option>
+          <option value="Action">Action</option>
+          <option value="Aventure">Aventure</option>
+          <option value="fantasy">Fantasy</option>
+          <option value="horror">Horreur</option>
+          <option value="science-fiction">Science-fiction</option>
+        </select>
         <br />
         <button type="submit">Ajouter le livre</button>
       </form>
