@@ -1,0 +1,268 @@
+.badge-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.badge-title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+/* Statistiques */
+.stats-section {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  color: white;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Prochain badge */
+.next-badge-section {
+  margin-bottom: 40px;
+}
+
+.next-badge-section h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.next-badge-card {
+  display: flex;
+  align-items: center;
+  padding: 25px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.badge-emoji-large {
+  font-size: 4rem;
+  margin-right: 25px;
+}
+
+.next-badge-info {
+  flex: 1;
+}
+
+.next-badge-info h4 {
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.next-badge-info p {
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.progress-info {
+  margin-top: 15px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Sections de badges */
+.earned-badges-section,
+.all-badges-section {
+  margin-bottom: 40px;
+}
+
+.earned-badges-section h3,
+.all-badges-section h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+/* Grille de badges */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.badge-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.badge-card.earned {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  transform: scale(1);
+}
+
+.badge-card.earned:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.badge-card.locked {
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 2px dashed #dee2e6;
+}
+
+.badge-emoji {
+  font-size: 2.5rem;
+  margin-right: 20px;
+  opacity: 1;
+}
+
+.badge-card.locked .badge-emoji {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+.badge-info {
+  flex: 1;
+}
+
+.badge-info h4 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.badge-info p {
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.badge-date {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.badge-requirement {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.progress-bar-small {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-bar-small .progress-fill {
+  height: 100%;
+  background: #4facfe;
+  border-radius: 3px;
+}
+
+/* Messages */
+.no-badges {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.badge-loading,
+.badge-error {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+}
+
+.badge-error {
+  color: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .badge-container {
+    padding: 15px;
+  }
+  
+  .badge-title {
+    font-size: 2rem;
+  }
+  
+  .stats-section {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .next-badge-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .badge-emoji-large {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .badges-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .badge-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .badge-emoji {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
