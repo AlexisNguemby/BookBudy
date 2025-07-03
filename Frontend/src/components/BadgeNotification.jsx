@@ -23,7 +23,7 @@ const BadgeNotification = ({ badges, onClose }) => {
     <div className={`badge-notification-overlay ${visible ? 'visible' : ''}`}>
       <div className="badge-notification-container">
         <div className="badge-notification-header">
-          <h2>🎉 Nouveau Badge Obtenu !</h2>
+          <h2> Nouveau Badge Obtenu !</h2>
           <button 
             className="close-btn"
             onClick={() => {

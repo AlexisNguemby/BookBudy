@@ -3,19 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import BookComponent from '../components/BookComponent';
 import BadgeDisplay from '../components/BadgeDisplay';
 import BadgeNotification from '../components/BadgeNotification';
+import './Profile.css';
+
+import AddBook from '../components/AddBookForm'; 
+
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [books, setBooks] = useState([]);
   const [error, setError] = useState('');
-  const [showEditForm, setShowEditForm] = useState(false);
   const [newBadges, setNewBadges] = useState([]);
+
+  const [activeTab, setActiveTab] = useState('collection');
+  const [categoryFilter, setCategoryFilter] = useState('Tous');
+
   const [editFormData, setEditFormData] = useState({
     email: '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
+
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -25,39 +33,60 @@ export default function Profile() {
     lastPageRead: '',
     category: '',
   });
+
   const navigate = useNavigate();
 
+  // Récupérer le profil utilisateur
   useEffect(() => {
-    fetch('http://localhost:5000/api/auth/profile', { // fetch endpoint for profile data
-      method: 'GET',
-      credentials: 'include',
-    })
-      .then(res => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/profile', {
+          method: 'GET',
+          credentials: 'include',
+        });
         if (!res.ok) throw new Error('Erreur récupération profil');
-        return res.json();
-      })
-      .then(data => setProfile(data))
-      .catch(err => setError(err.message));
+        const data = await res.json();
+        setProfile(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    fetchProfile();
   }, []);
 
+  // Récupérer les livres quand le profil est chargé
+  useEffect(() => {
+    if (!profile) return;
+
+    const fetchBooks = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/books', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Erreur récupération livres');
+        const data = await res.json();
+        setBooks(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    fetchBooks();
+  }, [profile]);
+
+  // Synchroniser email dans formulaire édition
   useEffect(() => {
     if (profile) {
-      fetch('http://localhost:5000/api/books', {
-        method: 'GET',
-        credentials: 'include',
-      })
-        .then(res => {
-          if (!res.ok) throw new Error('Erreur récupération livres');
-          return res.json();
-        })
-        .then(data => setBooks(data))
-        .catch(err => setError(err.message));
+      setEditFormData(prev => ({
+        ...prev,
+        email: profile.email || '',
+      }));
     }
   }, [profile]);
 
   const handleLogout = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/auth/logout', { // fetch endpoint for logout
+      const res = await fetch('http://localhost:5000/api/auth/logout', {
         method: 'POST',
         credentials: 'include',
       });
@@ -68,27 +97,26 @@ export default function Profile() {
     }
   };
 
-  // gestion du formulaire d'ajout de livre
   const handleChange = e => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
-  // gestion du formulaire de modification du profil
   const handleEditChange = e => {
+    const { name, value } = e.target;
     setEditFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
   const handleEditSubmit = async e => {
     e.preventDefault();
-    setError(''); // Clear previous errors
-    
-    // Vérification que les mots de passe correspondent
+    setError('');
+
     if (editFormData.newPassword && editFormData.newPassword !== editFormData.confirmPassword) {
       setError('Les nouveaux mots de passe ne correspondent pas');
       return;
@@ -96,13 +124,11 @@ export default function Profile() {
 
     try {
       const updateData = {};
-      
-      // Ajouter l'email s'il a été modifié
+
       if (editFormData.email && editFormData.email !== profile.email) {
         updateData.email = editFormData.email;
       }
-      
-      // Ajouter les mots de passe s'ils sont fournis
+
       if (editFormData.newPassword) {
         if (!editFormData.currentPassword) {
           setError('Le mot de passe actuel est requis pour modifier le mot de passe');
@@ -112,7 +138,6 @@ export default function Profile() {
         updateData.newPassword = editFormData.newPassword;
       }
 
-      // Vérifier qu'au moins une modification est demandée
       if (Object.keys(updateData).length === 0) {
         setError('Aucune modification détectée');
         return;
@@ -134,13 +159,7 @@ export default function Profile() {
 
       const data = await res.json();
       setProfile(prev => ({ ...prev, ...data.user }));
-      setShowEditForm(false);
-      setEditFormData({
-        email: data.user.email,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      });
+      setActiveTab('collection');
       setError('');
       alert('Profil mis à jour avec succès !');
     } catch (err) {
@@ -148,19 +167,12 @@ export default function Profile() {
     }
   };
 
-  useEffect(() => {
-    if (profile) {
-      setEditFormData(prev => ({
-        ...prev,
-        email: profile.email
-      }));
-    }
-  }, [profile]);
-
   const handleSubmit = async e => {
     e.preventDefault();
+    setError('');
+
     try {
-      const res = await fetch('http://localhost:5000/api/books', { // fetch endpoint for book addition
+      const res = await fetch('http://localhost:5000/api/books', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -168,15 +180,19 @@ export default function Profile() {
         },
         body: JSON.stringify(formData),
       });
-      if (!res.ok) throw new Error('Erreur ajout livre');
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Erreur ajout livre');
+      }
+
       const data = await res.json();
-      setBooks(prev => [...prev, data.book]); // ajoute le nouveau livre dans la liste
-      
-      // Vérifier si de nouveaux badges ont été obtenus
-      if (data.rewards && data.rewards.newBadges && data.rewards.newBadges.length > 0) {
+      setBooks(prev => [...prev, data.book]);
+
+      if (data.rewards?.newBadges?.length > 0) {
         setNewBadges(data.rewards.newBadges);
       }
-      
+
       setFormData({
         title: '',
         author: '',
@@ -185,193 +201,162 @@ export default function Profile() {
         pageCount: '',
         lastPageRead: '',
         category: '',
-      }); // reset form
+      });
+
+      setActiveTab('collection');
     } catch (err) {
       setError(err.message);
     }
   };
 
-  const handleBookUpdate = (updatedBook) => {
-    setBooks(prevBooks => 
-      prevBooks.map(book => 
-        book._id === updatedBook._id ? updatedBook : book
-      )
+  const handleBookUpdate = updatedBook => {
+    setBooks(prevBooks =>
+      prevBooks.map(book => (book._id === updatedBook._id ? updatedBook : book))
     );
   };
 
-  if (error) return <p>{error}</p>;
+  const categories = ['Tous', 'Action', 'Horreur', 'Aventure', 'Romance', 'Manga'];
+
+  const filteredBooks =
+    categoryFilter === 'Tous'
+      ? books
+      : books.filter(book => book.category === categoryFilter);
+
+  // Affichage d'erreur
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+
   if (!profile) return <p>Chargement profil...</p>;
 
   return (
-    <div>
-      <div>
+    <div >
+      {/* Profil */}
+
+<div className="profile-wrapper">
+      <div className="profile-container">
+    
+      <div style={{ textAlign: 'center', marginBottom: 30 }}>
         <h2>Profil de {profile.username}</h2>
         <p>Email : {profile.email}</p>
+        <button onClick={handleLogout}  className="profile-button">Déconnexion</button>
+        </div>
       </div>
-      
-      <button 
-        onClick={() => setShowEditForm(!showEditForm)}
-      >
-        {showEditForm ? 'Annuler' : 'Modifier mes informations'}
-      </button>
+      </div>
 
-      {showEditForm && (
+      {/* Onglets */}
+    <nav className="tab-nav">
+  {['collection', 'addBook', 'editProfile'].map(tab => {
+    const label =
+      tab === 'collection'
+        ? 'Ma collection'
+        : tab === 'addBook'
+        ? 'Ajouter un livre'
+        : 'Modifier mes informations';
+
+    return (
+      <button
+        key={tab}
+        onClick={() => setActiveTab(tab)}
+        className={`tab-button ${activeTab === tab ? 'active' : ''}`}
+        aria-current={activeTab === tab ? 'page' : undefined}
+      >
+        {label}
+      </button>
+    );
+  })}
+</nav>
+
+
+ {activeTab === 'collection' && (
+  <div>
+    {/* Filtre catégories */}
+    <div className="category-filter">
+      {categories.map(cat => (
+        <button
+          key={cat}
+          onClick={() => setCategoryFilter(cat)}
+          className={`category-button ${categoryFilter === cat ? 'active' : ''}`}
+          aria-pressed={categoryFilter === cat}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    {filteredBooks.length === 0 ? (
+      <p className="no-books-msg">
+        Pas encore de livres dans cette catégorie.
+      </p>
+    ) : (
+      filteredBooks.map(book => (
+        <BookComponent key={book._id} book={book} onBookUpdate={handleBookUpdate} />
+      ))
+    )}
+  </div>
+)}
+
+{activeTab === 'addBook' && (
+  <AddBook
+    formData={formData}
+    handleChange={handleChange}
+    handleSubmit={handleSubmit}
+    categories={categories}
+  />
+)}
+
+
+
+      {activeTab === 'editProfile' && (
         <div>
           <h3>Modifier mes informations</h3>
-          <form onSubmit={handleEditSubmit}>
-            <div>
-              <label>Nouvel email (optionnel) :</label>
-              <input
-                type="email"
-                name="email"
-                placeholder={profile.email}
-                value={editFormData.email}
-                onChange={handleEditChange}
-              />
-            </div>
-
-            <div>
-              <label>Mot de passe actuel (requis pour changer le mot de passe) :</label>
-              <input
-                type="password"
-                name="currentPassword"
-                placeholder="Mot de passe actuel"
-                value={editFormData.currentPassword}
-                onChange={handleEditChange}
-              />
-            </div>
-
-            <div>
-              <label>Nouveau mot de passe (optionnel) :</label>
-              <input
-                type="password"
-                name="newPassword"
-                placeholder="Nouveau mot de passe"
-                value={editFormData.newPassword}
-                onChange={handleEditChange}
-              />
-            </div>
-
-            <div>
-              <label>Confirmer le nouveau mot de passe :</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirmer le nouveau mot de passe"
-                value={editFormData.confirmPassword}
-                onChange={handleEditChange}
-              />
-            </div>
-
-            <div>
-              <button type="submit">
-                Sauvegarder
-              </button>
-              <button 
-                type="button"
-                onClick={() => {
-                  setShowEditForm(false);
-                  setError('');
-                  setEditFormData({
-                    email: profile.email,
-                    currentPassword: '',
-                    newPassword: '',
-                    confirmPassword: ''
-                  });
-                }}
-              >
-                Annuler
-              </button>
-            </div>
+          <form onSubmit={handleEditSubmit} style={{ marginBottom: 30 }}>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={editFormData.email}
+              onChange={handleEditChange}
+              required
+              style={{ display: 'block', marginBottom: 10, width: '100%', padding: 8 }}
+            />
+            <input
+              type="password"
+              name="currentPassword"
+              placeholder="Mot de passe actuel"
+              value={editFormData.currentPassword}
+              onChange={handleEditChange}
+              style={{ display: 'block', marginBottom: 10, width: '100%', padding: 8 }}
+              autoComplete="current-password"
+            />
+            <input
+              type="password"
+              name="newPassword"
+              placeholder="Nouveau mot de passe"
+              value={editFormData.newPassword}
+              onChange={handleEditChange}
+              style={{ display: 'block', marginBottom: 10, width: '100%', padding: 8 }}
+              autoComplete="new-password"
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirmer le nouveau mot de passe"
+              value={editFormData.confirmPassword}
+              onChange={handleEditChange}
+              style={{ display: 'block', marginBottom: 10, width: '100%', padding: 8 }}
+              autoComplete="new-password"
+            />
+            <button type="submit" style={{ padding: '10px 20px', cursor: 'pointer' }}>
+              Mettre à jour
+            </button>
           </form>
         </div>
       )}
 
-      {error && <div>{error}</div>}
-
-      <h3>Ajouter un livre</h3>
-      <form onSubmit={handleSubmit} style={{ marginBottom: 30 }}>
-        <input
-          type="text"
-          name="title"
-          placeholder="Titre"
-          value={formData.title}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <input
-          type="text"
-          name="author"
-          placeholder="Auteur"
-          value={formData.author}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <input
-          type="text"
-          name="cover"
-          placeholder="URL couverture"
-          value={formData.cover}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="text"
-          name="status"
-          placeholder="Statut"
-          value={formData.status}
-          onChange={handleChange}
-        />
-        <br />
-        <input
-          type="number"
-          name="pageCount"
-          placeholder="Nombre de pages"
-          value={formData.pageCount}
-          onChange={handleChange}
-          min="1"
-        />
-        <br />
-        <input
-          type="number"
-          name="lastPageRead"
-          placeholder="Dernière page lue"
-          value={formData.lastPageRead}
-          onChange={handleChange}
-          min="0"
-        />
-        <br />
-        <input
-          type="text"
-          name="category"
-          placeholder="Catégorie"
-          value={formData.category}
-          onChange={handleChange}
-        />
-        <br />
-        <button type="submit">Ajouter le livre</button>
-      </form>
-
-      <h3>Ma collection de livres</h3>
-      {books.length === 0 && <p>Pas encore de livres ajoutés.</p>}
-      {books.map(book => (
-        <BookComponent key={book._id} book={book} onBookUpdate={handleBookUpdate} />
-      ))}
-
-      {/* Section des badges */}
       <BadgeDisplay />
 
-      {/* Notification de nouveaux badges */}
       {newBadges.length > 0 && (
-        <BadgeNotification 
-          badges={newBadges} 
-          onClose={() => setNewBadges([])} 
-        />
+        <BadgeNotification badges={newBadges} onClose={() => setNewBadges([])} />
       )}
-
-      <button onClick={handleLogout}>Déconnexion</button>
     </div>
   );
 }

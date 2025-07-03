@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import '../components/AddbookForm.css'; 
 export default function AddBookForm() {
   const [form, setForm] = useState({
     title: '',
@@ -45,7 +45,7 @@ export default function AddBookForm() {
   };
 
   return (
-    <div>
+    <div  className="add-book-form">
       <h2>Ajouter un livre à ma collection</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -68,12 +68,18 @@ export default function AddBookForm() {
           value={form.cover}
           onChange={handleChange}
         />
-        <input
-          name="status"
-          placeholder="Statut (ex: lu, en cours)"
-          value={form.status}
-          onChange={handleChange}
-        />
+      <select
+        name="status"
+        value={form.status}
+        onChange={handleChange}
+        required
+       >
+        <option value="">Sélectionnez le statut</option>
+        <option value="En cours">En cours</option>
+        <option value="Terminé">Terminé</option>
+        <option value="À lire">À lire</option>
+        </select>
+
         <input
           name="pageCount"
           type="number"

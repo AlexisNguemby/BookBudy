@@ -1,63 +1,58 @@
 import { useState } from 'react';
 import EditBookForm from './EditBookForm';
+import './BookComponent.css'; // à créer si besoin
 
 export default function BookComponent({ book, onBookUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
   const [currentBook, setCurrentBook] = useState(book);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  const handleEdit = () => setIsEditing(true);
+  const handleCancel = () => setIsEditing(false);
 
   const handleSave = (updatedBook) => {
     setCurrentBook(updatedBook);
     setIsEditing(false);
-    if (onBookUpdate) {
-      onBookUpdate(updatedBook);
-    }
+    if (onBookUpdate) onBookUpdate(updatedBook);
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-  };
+  const progress = currentBook.pageCount > 0
+    ? Math.round((currentBook.lastPageRead / currentBook.pageCount) * 100)
+    : 0;
 
   return (
     <>
-      <div>
-        <div>
-          <div>
-            <h3>{currentBook.title}</h3>
-            <p><strong>Auteur :</strong> {currentBook.author}</p>
-            {currentBook.cover && (
-              <img 
-                src={currentBook.cover} 
-                alt={currentBook.title}
-              />
-            )}
-            <p><strong>Statut :</strong> {currentBook.status}</p>
-            <p><strong>Pages :</strong> {currentBook.pageCount}</p>
-            <p><strong>Dernière page lue :</strong> {currentBook.lastPageRead}</p>
-            <p><strong>Catégorie :</strong> {currentBook.category}</p>
-          </div>
-          
-          <button
-            onClick={handleEdit}
-          >
-            ✏️ Modifier
-          </button>
+      <div className="book-card">
+        {/* Badge catégorie */}
+        {currentBook.category && (
+          <div className="book-badge">{currentBook.category}</div>
+        )}
+
+        {/* Couverture */}
+        <div
+          className="book-cover"
+          style={{ backgroundImage: `url(${currentBook.cover || 'placeholder.jpg'})` }}
+        />
+
+        {/* Infos */}
+        <div className="book-info">
+          <h3 className="book-title">{currentBook.title}</h3>
+          <p className="book-author">{currentBook.author}</p>
+          <p className="book-meta">Statut : {currentBook.status}</p>
+          <p className="book-meta">Pages : {currentBook.pageCount}</p>
+          <p className="book-meta">Dernière page lue : {currentBook.lastPageRead}</p>
         </div>
-        
+
+        {/* Progression */}
         {currentBook.pageCount > 0 && (
-          <div>
-            <strong>Progression : </strong>
-            {Math.round((currentBook.lastPageRead / currentBook.pageCount) * 100)}%
-            <div>
-              <div style={{ 
-                width: `${(currentBook.lastPageRead / currentBook.pageCount) * 100}%`
-              }}></div>
+          <div className="book-progress">
+            <div className="progress-bar-bg">
+              <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
             </div>
+            <span className="progress-text">{progress}%</span>
           </div>
         )}
+
+        <button className="edit-button" onClick={handleEdit}> Modifier</button>
       </div>
 
       {isEditing && (

@@ -65,7 +65,7 @@ const BadgeDisplay = () => {
 
   return (
     <div className="badge-container">
-      <h2 className="badge-title">🏆 Mes Badges de Lecture</h2>
+      <h2 className="badge-title"> Mes Badges de Lecture</h2>
       
       {/* Statistiques générales */}
       <div className="stats-section">
@@ -82,7 +82,7 @@ const BadgeDisplay = () => {
       {/* Prochain badge à débloquer */}
       {nextBadge && (
         <div className="next-badge-section">
-          <h3>🎯 Prochain Objectif</h3>
+          <h3> Prochain Objectif</h3>
           <div className="next-badge-card">
             <div className="badge-emoji-large">{nextBadge.emoji}</div>
             <div className="next-badge-info">
@@ -107,7 +107,7 @@ const BadgeDisplay = () => {
 
       {/* Badges obtenus */}
       <div className="earned-badges-section">
-        <h3>✨ Badges Obtenus</h3>
+        <h3> Badges Obtenus</h3>
         {userProgress?.earnedBadges?.length > 0 ? (
           <div className="badges-grid">
             {userProgress.earnedBadges.map((badge, index) => (
@@ -130,7 +130,7 @@ const BadgeDisplay = () => {
 
       {/* Tous les badges disponibles */}
       <div className="all-badges-section">
-        <h3>🎖️ Tous les Badges Disponibles</h3>
+        <h3> Tous les Badges Disponibles</h3>
         <div className="badges-grid">
           {userProgress?.progress?.map((badgeProgress, index) => (
             <div 
