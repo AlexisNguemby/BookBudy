@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import EditBookForm from './EditBookForm';
-import './BookComponent.css'; // à créer si besoin
+import './bookComponent.css';
 
 export default function BookComponent({ book, onBookUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -22,18 +22,15 @@ export default function BookComponent({ book, onBookUpdate }) {
   return (
     <>
       <div className="book-card">
-        {/* Badge catégorie */}
         {currentBook.category && (
           <div className="book-badge">{currentBook.category}</div>
         )}
 
-        {/* Couverture */}
         <div
           className="book-cover"
           style={{ backgroundImage: `url(${currentBook.cover || 'placeholder.jpg'})` }}
         />
 
-        {/* Infos */}
         <div className="book-info">
           <h3 className="book-title">{currentBook.title}</h3>
           <p className="book-author">{currentBook.author}</p>
@@ -42,7 +39,6 @@ export default function BookComponent({ book, onBookUpdate }) {
           <p className="book-meta">Dernière page lue : {currentBook.lastPageRead}</p>
         </div>
 
-        {/* Progression */}
         {currentBook.pageCount > 0 && (
           <div className="book-progress">
             <div className="progress-bar-bg">
@@ -52,11 +48,11 @@ export default function BookComponent({ book, onBookUpdate }) {
           </div>
         )}
 
-        <button className="edit-button" onClick={handleEdit}> Modifier</button>
+        <button className="edit-button" onClick={handleEdit}>Modifier</button>
       </div>
 
       {isEditing && (
-        <EditBookForm 
+        <EditBookForm
           book={currentBook}
           onSave={handleSave}
           onCancel={handleCancel}

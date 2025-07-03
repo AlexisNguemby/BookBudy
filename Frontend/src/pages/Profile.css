@@ -112,3 +112,62 @@ body{
   color: #888;
   margin-top: 20px;
 }
+.edit-profile-form {
+  max-width: 500px;
+  margin: 0 auto 30px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.edit-profile-form h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #5a3e1b;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.edit-profile-form input {
+  width: 70%;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.edit-profile-form input:focus {
+  border-color: #c4a77d;
+  outline: none;
+  box-shadow: 0 0 5px #c4a77d;
+}
+
+.edit-profile-form button {
+  width:70%;
+  padding: 12px 0;
+  background-color: #c4a77d;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.edit-profile-form button:hover {
+  background-color: #ffffff;
+  color: #c4a77d;
+  border: solid 2px #c4a77d
+}
+.books-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; 
+  padding: 10px;
+}

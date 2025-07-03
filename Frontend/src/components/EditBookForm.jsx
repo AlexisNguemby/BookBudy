@@ -1,150 +1,121 @@
 import { useState } from 'react';
-import './EditBookForm.css';
+
 export default function EditBookForm({ book, onSave, onCancel }) {
   const [formData, setFormData] = useState({
     title: book.title || '',
     author: book.author || '',
     cover: book.cover || '',
     status: book.status || '',
-    pageCount: book.pageCount || 0,
-    lastPageRead: book.lastPageRead || 0,
+    pageCount: book.pageCount || '',
+    lastPageRead: book.lastPageRead || '',
     category: book.category || '',
   });
 
-  const handleChange = (e) => {
+  const [error, setError] = useState('');
+
+  const handleChange = e => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+    setError('');
+
     try {
-      const url = `http://localhost:5000/api/books/${book._id}`;
-      
-      const response = await fetch(url, {
+      const res = await fetch(`http://localhost:5000/api/books/${book._id}`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        const updatedBook = await response.json();
-        onSave(updatedBook.book);
-      } else {
-        const error = await response.json();
-        alert(error.message || 'Erreur lors de la modification');
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Erreur mise à jour livre');
       }
-    } catch (error) {
-      console.error('Erreur:', error);
-      alert('Erreur lors de la modification du livre');
+
+      const updatedBook = await res.json();
+      onSave(updatedBook.book); // remonte la mise à jour
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
-    <div>
-      <div>
-        <h2>Modifier le livre</h2>
+    <div className="modal-overlay" style={{
+      position: 'fixed', top:0, left:0, right:0, bottom:0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex', justifyContent: 'center', alignItems: 'center',
+      zIndex: 1000,
+    }}>
+      <div className="modal-content" style={{
+        background: 'white',
+        padding: 20,
+        borderRadius: 8,
+        width: '90%',
+        maxWidth: 400,
+      }}>
+        <h3>Modifier le livre</h3>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+
         <form onSubmit={handleSubmit}>
-          <div>
-            <label>Titre *</label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div>
-            <label>Auteur *</label>
-            <input
-              type="text"
-              name="author"
-              value={formData.author}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div>
-            <label>URL de la couverture</label>
-            <input
-              type="text"
-              name="cover"
-              value={formData.cover}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div>
-            <label>Statut</label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-            >
-              <option value="">Sélectionner un statut</option>
-              <option value="À lire">À lire</option>
-              <option value="En cours">En cours</option>
-              <option value="Lu">Lu</option>
-              <option value="Abandonné">Abandonné</option>
-            </select>
-          </div>
-
-          <div>
-            <label>Nombre de pages</label>
-            <input
-              type="number"
-              name="pageCount"
-              value={formData.pageCount}
-              onChange={handleChange}
-              min="0"
-            />
-          </div>
-
-          <div>
-            <label>Dernière page lue</label>
-            <input
-              type="number"
-              name="lastPageRead"
-              value={formData.lastPageRead}
-              onChange={handleChange}
-              min="0"
-              max={formData.pageCount}
-            />
-          </div>
-
-          <div>
-            <label>Catégorie</label>
-            <input
-              type="text"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              placeholder="Ex: Fiction, Science-fiction, Romance..."
-            />
-          </div>
-
-          <div>
-            <button
-              type="button"
-              onClick={onCancel}
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-            >
-              Sauvegarder
-            </button>
+          <input
+            type="text"
+            name="title"
+            placeholder="Titre"
+            value={formData.title}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="author"
+            placeholder="Auteur"
+            value={formData.author}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="cover"
+            placeholder="URL de la couverture"
+            value={formData.cover}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="status"
+            placeholder="Statut"
+            value={formData.status}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="pageCount"
+            placeholder="Nombre de pages"
+            value={formData.pageCount}
+            onChange={handleChange}
+          />
+          <input
+            type="number"
+            name="lastPageRead"
+            placeholder="Dernière page lue"
+            value={formData.lastPageRead}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="category"
+            placeholder="Catégorie"
+            value={formData.category}
+            onChange={handleChange}
+          />
+          <div style={{ marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
+            <button type="submit">Enregistrer</button>
+            <button type="button" onClick={onCancel}>Annuler</button>
           </div>
         </form>
       </div>
