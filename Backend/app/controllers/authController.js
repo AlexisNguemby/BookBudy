@@ -8,7 +8,8 @@ const Book = require('../documents/Book');
 //create the token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { //variable of secret token stocked in .env
-    expiresIn: '7d' //496 heures = 7days
+   expiresIn: '5m' // 5 minutes
+
   });
 };
 
@@ -30,11 +31,11 @@ exports.register = async (req, res) => {  //inscription
     const token = generateToken(newUser._id);
 
     res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: false, 
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-    });
+            httpOnly: true,
+            secure: false, 
+            sameSite: 'strict',
+            maxAge: 5 * 60 * 1000 // 5 minutes
+            });
 
     res.status(201).json({ user: { id: newUser._id, username: newUser.username } });
   } catch (err) {
@@ -55,12 +56,12 @@ exports.login = async (req, res) => { //login
 
     const token = generateToken(user._id);
 
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 //7days
-    });
+   res.cookie('jwt', token, {
+            httpOnly: true,
+            secure: false, 
+            sameSite: 'strict',
+            maxAge: 5 * 60 * 1000 // 5 minutes
+            });
 
     res.status(200).json({ user: { id: user._id, username: user.username } });
   } catch (err) {
