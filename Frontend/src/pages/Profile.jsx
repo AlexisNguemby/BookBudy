@@ -5,6 +5,8 @@ import EditBookForm from '../components/EditBookForm';
 import BadgeDisplay from '../components/BadgeDisplay';
 import BadgeNotification from '../components/BadgeNotification';
 import AddBook from '../components/AddBookForm'; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Profile.css';
 
 export default function Profile() {
@@ -40,17 +42,28 @@ export default function Profile() {
   // Fetch profil
   useEffect(() => {
     const fetchProfile = async () => {
-      try {
-        const res = await fetch('http://localhost:5000/api/auth/profile', {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!res.ok) throw new Error('Erreur récupération profil');
-        const data = await res.json();
-        setProfile(data);
-      } catch (err) {
-        setError(err.message);
-      }
+     try {
+  const res = await fetch('http://localhost:5000/api/auth/profile', {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+          if (res.status === 401) {
+            toast.error('Session expirée. Redirection vers la page de connexion...');
+           
+            setTimeout(() => navigate('/login'), 3000);
+            return;
+          }
+          throw new Error('Erreur récupération profil');
+        }
+
+  const data = await res.json();
+  setProfile(data);
+} catch (err) {
+  toast.error(err.message || "Une erreur est survenue");
+}
+
     };
     fetchProfile();
   }, []);
