@@ -1,10 +1,27 @@
+:root {
+  --color-bg: #1A1A1A;
+  --color-accent: #C19A6B;
+  --color-light: #F5F5DC;
+  --color-text: #F5F5DC;
+  --color-card-bg: #2a2a2a;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f9f7f2;
+  background-color: var(--color-bg);
   flex-direction: column;
+  color: var(--color-text);
 }
 
 .login-title {
@@ -15,48 +32,64 @@
 }
 
 .login-card {
-  background-color: white;
+  background-color: var(--color-card-bg);
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 0px 10px rgba(193, 154, 107, 0.6);
   width: 300px;
+  color: var(--color-light);
 }
 
 .login-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
   font-size: 18px;
+  color: var(--color-light);
 }
 
 .login-card input {
   width: 100%;
   padding: 8px;
   margin-bottom: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
   border-radius: 4px;
+  background-color: #1f1f1f;
+  color: var(--color-light);
+  transition: border-color 0.3s ease;
+}
+
+.login-card input::placeholder {
+  color: #aaa;
+}
+
+.login-card input:focus {
+  border-color: var(--color-accent);
+  outline: none;
+  box-shadow: 0 0 5px var(--color-accent);
 }
 
 .login-button {
   width: 100%;
   padding: 8px;
-  background-color: #c4a77d;
-  color: white;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 1rem;
   transition: all 0.3s ease;
   border: 1px solid transparent;
+  font-weight: 600;
 }
 
 .login-button:hover {
-  background-color: white;
-  color: #c4a77d;
-  border: 1px solid #c4a77d;
+  background-color: var(--color-light);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
 }
 
 .login-message {
   margin-top: 1rem;
   text-align: center;
-  color: red;
+  color: rgb(48, 201, 43);
 }

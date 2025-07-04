@@ -1,0 +1,206 @@
+:root {
+  --color-bg: #1A1A1A;
+  --color-accent: #C19A6B;
+  --color-light: #F5F5DC;
+  --color-text: #F5F5DC;
+  --color-card-bg: #2a2a2a;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.explore-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem 1rem;
+}
+
+.explore-heading {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: var(--color-accent);
+}
+
+.explore-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.explore-category-btn {
+  background-color: transparent;
+  color: var(--color-light);
+  border: 1px solid var(--color-accent);
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+ 
+}
+
+.explore-category-btn:hover,
+.explore-category-btn.active-category {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.explore-search-input {
+  display: block;
+  margin: 0 auto 2rem auto;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid var(--color-accent);
+  border-radius: 25px;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.explore-search-input::placeholder {
+  color: #aaa;
+}
+
+.explore-status-text {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--color-light);
+  margin-top: 2rem;
+}
+
+.explore-book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.explore-book-card {
+  background-color: var(--color-card-bg);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(193, 154, 107, 0.2);
+
+  display: flex;
+  flex-direction: column;
+  height: 500px; 
+  overflow: hidden;
+}
+
+.explore-book-card:hover {
+  transform: translateY(-5px);
+}
+
+.explore-book-img {
+  width: 100%;
+  height: 180px; 
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+  background-color: #333;
+  flex-shrink: 0;
+}
+
+.explore-book-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.explore-book-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--color-light);
+}
+
+.explore-book-authors,
+.explore-book-year,
+.explore-book-description {
+  font-size: 0.9rem;
+  color: #d6d6c2;
+}
+
+.explore-book-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4; 
+  -webkit-box-orient: vertical;
+}
+
+
+.add-collection-button {
+  background-color: #a67e50;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin-top: auto;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+ 
+  display: inline-block;
+  align-self: stretch;
+  text-align: center;
+}
+
+
+.add-collection-button:hover:not(:disabled) {
+  background-color: #ffffff; 
+  border: #a67e50 solid 1px;
+  color: #a67e50;
+}
+
+.add-collection-button:disabled {
+  background-color: #C19A6B;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #F5F5DC;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  color: #000;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #333;
+}
+
+.modal-close-btn:hover {
+  color: #000;
+}

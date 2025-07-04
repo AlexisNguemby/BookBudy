@@ -1,8 +1,59 @@
-body{
-    background-color: #FAF9F6;
-    margin: 0;
-    padding: 0;
+
+body {
+  background-color: #1A1A1A;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  padding: 0 15px;
+}
+
+
+.back-button {
+  background-color: #c4a77d;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  min-width: 130px;
+
+}
+
+.back-button:hover {
+  background-color: #000000;
+  color: white;
+  border: 2px solid #c4a77d;
+}
+
+
+.profile-container {
+  background-color: #c4a77d;
+  max-width: 700px;
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  border-radius: 15px;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  flex-direction: column;
+  text-align: center;
+}
+
+
 .profile-button {
   width: 150px;
   padding: 8px;
@@ -14,47 +65,29 @@ body{
   margin-top: 1rem;
   transition: all 0.3s ease;
   border: 1px solid transparent;
-
+  font-weight: 600;
 }
+
 .profile-button:hover {
   background-color: white;
   color: #c4a77d;
   border: 1px solid #ffffff;
 }
 
-.profile-container {
-  background-color: #c4a77d;
-  width: 800px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 400px;
-  border-radius: 15px;
-  color: white;
-}
-
-.profile-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
- padding-top: 50px;
-  background-color: #f5f5f5; 
-  flex-direction: column;
-  padding-bottom: 50px;
-}
 .tab-nav {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 30px;
   border-bottom: 2px solid #ddd;
-  margin: 0 auto 25px; 
+  margin: 25px auto;
   background-color: #ffffff;
   padding: 10px 20px;
-  width: fit-content; 
-  border-radius: 10px; 
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); 
+  width: fit-content;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
+
 
 .tab-button {
   padding: 10px 25px;
@@ -65,14 +98,16 @@ body{
   color: #444;
   transition: color 0.3s, border-bottom 0.3s;
   border-bottom: 3px solid transparent;
+  border-radius: 15px;
 }
 
 .tab-button.active {
   font-weight: bold;
   color: #ffffff;
   background-color: #c4a77d;
-  border-radius: 15px;
 }
+
+
 .category-filter {
   display: flex;
   justify-content: center;
@@ -87,10 +122,9 @@ body{
   font-size: 14px;
   color: #000000;
   background-color: #FAF9F6;
-  border: 1px solid transparent;
+  border: 2px solid #c4a77d;
   border-radius: 5px;
   transition: all 0.3s ease;
-  border: #c4a77d solid 2px;
   width: 100px;
 }
 
@@ -102,9 +136,10 @@ body{
 .category-button.active {
   font-weight: bold;
   color: white;
-  background-color: #c4a77d; 
+  background-color: #c4a77d;
   border: 1px solid #c4a77d;
 }
+
 
 .no-books-msg {
   text-align: center;
@@ -112,6 +147,17 @@ body{
   color: #888;
   margin-top: 20px;
 }
+
+
+.books-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 10px;
+}
+
+
 .edit-profile-form {
   max-width: 500px;
   margin: 0 auto 30px;
@@ -125,7 +171,6 @@ body{
   text-align: center;
   margin-bottom: 20px;
   color: #5a3e1b;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .edit-profile-form input {
@@ -136,7 +181,6 @@ body{
   border-radius: 8px;
   font-size: 16px;
   transition: border-color 0.3s ease;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .edit-profile-form input:focus {
@@ -146,7 +190,7 @@ body{
 }
 
 .edit-profile-form button {
-  width:70%;
+  width: 70%;
   padding: 12px 0;
   background-color: #c4a77d;
   color: white;
@@ -156,18 +200,27 @@ body{
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .edit-profile-form button:hover {
   background-color: #ffffff;
   color: #c4a77d;
-  border: solid 2px #c4a77d
+  border: 2px solid #c4a77d;
 }
-.books-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center; 
-  padding: 10px;
+
+
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .profile-container {
+    width: 90%;
+    height: auto;
+  }
+  .tab-nav {
+    width: 100%;
+    padding: 10px 5px;
+    gap: 15px;
+  }
 }

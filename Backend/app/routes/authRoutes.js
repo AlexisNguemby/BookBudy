@@ -11,4 +11,7 @@ router.post('/logout', logout);
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
 
+router.get('/me', protect, getProfile);
+
+
 module.exports = router;

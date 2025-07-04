@@ -94,12 +94,26 @@ export default function AddBookForm() {
           value={form.lastPageRead}
           onChange={handleChange}
         />
-        <input
-          name="category"
-          placeholder="Catégorie"
-          value={form.category}
-          onChange={handleChange}
-        />
+<label htmlFor="category">Catégorie</label>
+<select
+  id="category"
+  name="category"
+  value={form.category}
+  onChange={handleChange}
+  required
+>
+  <option value="">Sélectionnez une catégorie</option>
+  <option value="fantasy">Fantasy</option>
+  <option value="romance">Romance</option>
+  <option value="science fiction">Science Fiction</option>
+  <option value="horror">Horror</option>
+  <option value="history">History</option>
+  <option value="mystery">Mystery</option>
+  <option value="biography">Biography</option>
+  <option value="children">Children</option>
+  <option value="philosophy">Philosophy</option>
+</select>
+
         <button type="submit">Ajouter</button>
       </form>
       <p>{message}</p>

@@ -4,13 +4,15 @@ import BookComponent from '../components/BookComponent';
 import EditBookForm from '../components/EditBookForm';
 import BadgeDisplay from '../components/BadgeDisplay';
 import BadgeNotification from '../components/BadgeNotification';
-import AddBook from '../components/AddBookForm'; 
-import { ToastContainer, toast } from 'react-toastify';
+import AddBook from '../components/AddBookForm';
 import 'react-toastify/dist/ReactToastify.css';
 import './Profile.css';
+import { useUser } from '../context/UserContext';
+import Header from '../components/Header';
 
 export default function Profile() {
-  const [profile, setProfile] = useState(null);
+  const { user, fetchUser, logout } = useUser();  
+
   const [books, setBooks] = useState([]);
   const [error, setError] = useState('');
   const [newBadges, setNewBadges] = useState([]);
@@ -22,7 +24,7 @@ export default function Profile() {
     email: '',
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   const [formData, setFormData] = useState({
@@ -39,38 +41,9 @@ export default function Profile() {
 
   const navigate = useNavigate();
 
-  // Fetch profil
   useEffect(() => {
-    const fetchProfile = async () => {
-     try {
-  const res = await fetch('http://localhost:5000/api/auth/profile', {
-    method: 'GET',
-    credentials: 'include',
-  });
+    if (!user) return;
 
-  if (!res.ok) {
-          if (res.status === 401) {
-            toast.error('Session expirée. Redirection vers la page de connexion...');
-           
-            setTimeout(() => navigate('/login'), 3000);
-            return;
-          }
-          throw new Error('Erreur récupération profil');
-        }
-
-  const data = await res.json();
-  setProfile(data);
-} catch (err) {
-  toast.error(err.message || "Une erreur est survenue");
-}
-
-    };
-    fetchProfile();
-  }, []);
-
-  // Fetch livres
-  useEffect(() => {
-    if (!profile) return;
     const fetchBooks = async () => {
       try {
         const res = await fetch('http://localhost:5000/api/books', {
@@ -84,49 +57,47 @@ export default function Profile() {
         setError(err.message);
       }
     };
-    fetchBooks();
-  }, [profile]);
 
+    fetchBooks();
+  }, [user]);
 
   useEffect(() => {
-    if (profile) {
-      setEditFormData(prev => ({
+    if (user) {
+      setEditFormData((prev) => ({
         ...prev,
-        email: profile.email || '',
+        email: user.email || '',
       }));
     }
-  }, [profile]);
+  }, [user]);
 
   const handleLogout = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (!res.ok) throw new Error('Erreur lors de la déconnexion');
-      navigate('/login');
+      await logout();          
+      navigate('/home');       
     } catch (err) {
       setError(err.message);
     }
   };
 
-  const handleChange = e => {
+
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleEditChange = e => {
+  const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditFormData(prev => ({
+    setEditFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleEditSubmit = async e => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -138,7 +109,7 @@ export default function Profile() {
     try {
       const updateData = {};
 
-      if (editFormData.email && editFormData.email !== profile.email) {
+      if (editFormData.email && editFormData.email !== user.email) {
         updateData.email = editFormData.email;
       }
 
@@ -170,8 +141,8 @@ export default function Profile() {
         throw new Error(errorData.message || 'Erreur lors de la mise à jour');
       }
 
-      const data = await res.json();
-      setProfile(prev => ({ ...prev, ...data.user }));
+      await fetchUser();
+
       setActiveTab('collection');
       setError('');
       alert('Profil mis à jour avec succès !');
@@ -180,7 +151,7 @@ export default function Profile() {
     }
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -200,7 +171,7 @@ export default function Profile() {
       }
 
       const data = await res.json();
-      setBooks(prev => [...prev, data.book]);
+      setBooks((prev) => [...prev, data.book]);
 
       if (data.rewards?.newBadges?.length > 0) {
         setNewBadges(data.rewards.newBadges);
@@ -222,43 +193,58 @@ export default function Profile() {
     }
   };
 
- 
-  const handleBookUpdate = updatedBook => {
-    setBooks(prevBooks =>
-      prevBooks.map(book => (book._id === updatedBook._id ? updatedBook : book))
+  const handleBookUpdate = (updatedBook) => {
+    setBooks((prevBooks) =>
+      prevBooks.map((book) => (book._id === updatedBook._id ? updatedBook : book))
     );
   };
 
-  const categories = ['Tous', 'Action', 'Horreur', 'Aventure', 'Romance', 'Manga'];
+  const categories = [ 'fantasy',
+  'romance',
+  'science fiction',
+  'horror',
+  'history',
+  'mystery',
+  'biography',
+  'children',
+  'philosophy', 'Tous'];
 
   const filteredBooks =
     categoryFilter === 'Tous'
       ? books
-      : books.filter(book => book.category === categoryFilter);
+      : books.filter((book) => book.category === categoryFilter);
 
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
-  if (!profile) return <p>Chargement profil...</p>;
+  if (!user) return <p>Chargement profil...</p>;
 
   return (
     <div>
-      <div className="profile-wrapper">
-        <div className="profile-container">
-          <div style={{ textAlign: 'center', marginBottom: 30 }}>
-            <h2>Profil de {profile.username}</h2>
-            <p>Email : {profile.email}</p>
-            <button onClick={handleLogout} className="profile-button">Déconnexion</button>
-          </div>
-        </div>
-      </div>
+         <Header />
+   <div className="profile-header">
+  <button onClick={() => navigate('/Home')} className="back-button">
+    ← Retour à l&apos;accueil
+  </button>
+  
+  <div className="profile-container">
+    <div style={{ textAlign: 'center', marginBottom: 30 }}>
+      <h2>Profil de {user.username}</h2>
+      <p>Email : {user.email}</p>
+      <button onClick={handleLogout} className="profile-button">
+        Déconnexion
+      </button>
+    </div>
+  </div>
+</div>
+
 
       <nav className="tab-nav">
-        {['collection', 'addBook', 'editProfile'].map(tab => {
+        {['collection', 'addBook', 'editProfile'].map((tab) => {
           const label =
             tab === 'collection'
               ? 'Ma collection'
               : tab === 'addBook'
-                ? 'Ajouter un livre'
-                : 'Modifier mes informations';
+              ? 'Ajouter un livre'
+              : 'Modifier mes informations';
 
           return (
             <button
@@ -276,7 +262,7 @@ export default function Profile() {
       {activeTab === 'collection' && (
         <div>
           <div className="category-filter">
-            {categories.map(cat => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setCategoryFilter(cat)}
@@ -292,7 +278,7 @@ export default function Profile() {
             <p className="no-books-msg">Pas encore de livres dans cette catégorie.</p>
           ) : (
             <div className="books-container">
-              {filteredBooks.map(book => (
+              {filteredBooks.map((book) => (
                 <BookComponent
                   key={book._id}
                   book={book}
@@ -352,14 +338,14 @@ export default function Profile() {
             />
             <button type="submit">Mettre à jour</button>
           </form>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
       )}
 
-      {/* Modal édition livre */}
       {editingBook && (
         <EditBookForm
           book={editingBook}
-          onSave={updatedBook => {
+          onSave={(updatedBook) => {
             handleBookUpdate(updatedBook);
             setEditingBook(null);
           }}
