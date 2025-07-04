@@ -11,7 +11,7 @@ import { useUser } from '../context/UserContext';
 import Header from '../components/Header';
 
 export default function Profile() {
-  const { user, fetchUser, logout } = useUser();  
+  const { user, fetchUser, logout } = useUser();
 
   const [books, setBooks] = useState([]);
   const [error, setError] = useState('');
@@ -72,14 +72,12 @@ export default function Profile() {
 
   const handleLogout = async () => {
     try {
-      await logout();          
-      navigate('/home');       
+      await logout();
+      navigate('/home');
     } catch (err) {
       setError(err.message);
     }
   };
-
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -199,15 +197,18 @@ export default function Profile() {
     );
   };
 
-  const categories = [ 'fantasy',
-  'romance',
-  'science fiction',
-  'horror',
-  'history',
-  'mystery',
-  'biography',
-  'children',
-  'philosophy', 'Tous'];
+  const categories = [
+    'fantasy',
+    'romance',
+    'science fiction',
+    'horror',
+    'history',
+    'mystery',
+    'biography',
+    'children',
+    'philosophy',
+    'Tous',
+  ];
 
   const filteredBooks =
     categoryFilter === 'Tous'
@@ -219,128 +220,135 @@ export default function Profile() {
 
   return (
     <div>
-         <Header />
-   <div className="profile-header">
-  <button onClick={() => navigate('/Home')} className="back-button">
-    ← Retour à l&apos;accueil
-  </button>
-  
-  <div className="profile-container">
-    <div style={{ textAlign: 'center', marginBottom: 30 }}>
-      <h2>Profil de {user.username}</h2>
-      <p>Email : {user.email}</p>
-      <button onClick={handleLogout} className="profile-button">
-        Déconnexion
-      </button>
-    </div>
-  </div>
-</div>
+      <Header />
 
+      <div className="profile-header">
+        <button onClick={() => navigate('/Home')} className="back-button">
+          ← Retour à l&apos;accueil
+        </button>
 
-      <nav className="tab-nav">
-        {['collection', 'addBook', 'editProfile'].map((tab) => {
-          const label =
-            tab === 'collection'
-              ? 'Ma collection'
-              : tab === 'addBook'
-              ? 'Ajouter un livre'
-              : 'Modifier mes informations';
-
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`tab-button ${activeTab === tab ? 'active' : ''}`}
-              aria-current={activeTab === tab ? 'page' : undefined}
-            >
-              {label}
+        <div className="profile-container">
+          <div style={{ textAlign: 'center', marginBottom: 30 }}>
+            <h2>Profil de {user.username}</h2>
+            <p>Email : {user.email}</p>
+            <button onClick={handleLogout} className="profile-button">
+              Déconnexion
             </button>
-          );
-        })}
-      </nav>
-
-      {activeTab === 'collection' && (
-        <div>
-          <div className="category-filter">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategoryFilter(cat)}
-                className={`category-button ${categoryFilter === cat ? 'active' : ''}`}
-                aria-pressed={categoryFilter === cat}
-              >
-                {cat}
-              </button>
-            ))}
           </div>
+        </div>
+      </div>
 
-          {filteredBooks.length === 0 ? (
-            <p className="no-books-msg">Pas encore de livres dans cette catégorie.</p>
-          ) : (
-            <div className="books-container">
-              {filteredBooks.map((book) => (
-                <BookComponent
-                  key={book._id}
-                  book={book}
-                  onBookUpdate={handleBookUpdate}
-                  onEdit={() => setEditingBook(book)}
+      <div className="profile-layout">
+        {/* Sidebar fixée à gauche */}
+        <aside className="sidebar">
+          {['collection', 'addBook', 'editProfile'].map((tab) => {
+            const label =
+              tab === 'collection'
+                ? 'Ma collection'
+                : tab === 'addBook'
+                ? 'Ajouter un livre'
+                : 'Modifier mes informations';
+
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`sidebar-button ${activeTab === tab ? 'active' : ''}`}
+                aria-current={activeTab === tab ? 'page' : undefined}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </aside>
+
+        <main className="content-area">
+          {activeTab === 'collection' && (
+            <>
+              <div className="category-filter">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoryFilter(cat)}
+                    className={`category-button ${
+                      categoryFilter === cat ? 'active' : ''
+                    }`}
+                    aria-pressed={categoryFilter === cat}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {filteredBooks.length === 0 ? (
+                <p className="no-books-msg">Pas encore de livres dans cette catégorie.</p>
+              ) : (
+                <div className="books-container">
+                  {filteredBooks.map((book) => (
+                    <BookComponent
+                      key={book._id}
+                      book={book}
+                      onBookUpdate={handleBookUpdate}
+                      onEdit={() => setEditingBook(book)}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {activeTab === 'addBook' && (
+            <AddBook
+              formData={formData}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              categories={categories}
+            />
+          )}
+
+          {activeTab === 'editProfile' && (
+            <div className="edit-profile-form">
+              <h3>Modifier mes informations</h3>
+              <form onSubmit={handleEditSubmit}>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={editFormData.email}
+                  onChange={handleEditChange}
+                  required
                 />
-              ))}
+                <input
+                  type="password"
+                  name="currentPassword"
+                  placeholder="Mot de passe actuel"
+                  value={editFormData.currentPassword}
+                  onChange={handleEditChange}
+                  autoComplete="current-password"
+                />
+                <input
+                  type="password"
+                  name="newPassword"
+                  placeholder="Nouveau mot de passe"
+                  value={editFormData.newPassword}
+                  onChange={handleEditChange}
+                  autoComplete="new-password"
+                />
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Confirmer le nouveau mot de passe"
+                  value={editFormData.confirmPassword}
+                  onChange={handleEditChange}
+                  autoComplete="new-password"
+                />
+                <button type="submit">Mettre à jour</button>
+              </form>
+              {error && <p style={{ color: 'red' }}>{error}</p>}
             </div>
           )}
-        </div>
-      )}
-
-      {activeTab === 'addBook' && (
-        <AddBook
-          formData={formData}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          categories={categories}
-        />
-      )}
-
-      {activeTab === 'editProfile' && (
-        <div className="edit-profile-form">
-          <h3>Modifier mes informations</h3>
-          <form onSubmit={handleEditSubmit}>
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={editFormData.email}
-              onChange={handleEditChange}
-              required
-            />
-            <input
-              type="password"
-              name="currentPassword"
-              placeholder="Mot de passe actuel"
-              value={editFormData.currentPassword}
-              onChange={handleEditChange}
-              autoComplete="current-password"
-            />
-            <input
-              type="password"
-              name="newPassword"
-              placeholder="Nouveau mot de passe"
-              value={editFormData.newPassword}
-              onChange={handleEditChange}
-              autoComplete="new-password"
-            />
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirmer le nouveau mot de passe"
-              value={editFormData.confirmPassword}
-              onChange={handleEditChange}
-              autoComplete="new-password"
-            />
-            <button type="submit">Mettre à jour</button>
-          </form>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-        </div>
-      )}
+        </main>
+      </div>
 
       {editingBook && (
         <EditBookForm

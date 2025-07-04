@@ -1,0 +1,234 @@
+.badge-container {
+  width: 100vw;
+  padding: 60px 80px;
+  background: #1A1A1A;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #3F2E1B;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  min-height: 100vh;
+}
+
+.badge-title {
+  font-size: 3.6rem;
+  font-weight: 900;
+  text-align: center;
+  color: #A67B5B;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+}
+
+.stats-section {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  margin-bottom: 40px;
+}
+
+.stat-item {
+  flex: 1 1 250px;
+  background: #A67B5B;
+  border-radius: 20px;
+  padding: 50px 40px;
+  color: #F5F5DC;
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.stat-item:hover {
+  transform: translateY(-15px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.stat-number {
+  font-size: 5rem;
+  margin-bottom: 15px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+}
+
+.stat-label {
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.next-badge-section {
+  background: #F5F5DC;
+  border-radius: 30px;
+  padding: 60px 80px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  color: #5E3E1B;
+}
+
+.badge-emoji-large {
+  font-size: 8rem;
+  user-select: none;
+  filter: drop-shadow(3px 3px 3px rgba(166,123,91,0.3));
+  flex-shrink: 0;
+}
+
+.next-badge-info h4 {
+  margin: 0 0 18px;
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.next-badge-info p {
+  font-size: 1.4rem;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #C19A6B;
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #A67B5B;
+}
+
+.progress-bar {
+  flex-grow: 1;
+  height: 22px;
+  background: #C19A6B;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: #A67B5B;
+  border-radius: 30px 0 0 30px;
+  transition: width 0.6s ease;
+}
+
+.progress-text {
+  min-width: 100px;
+  text-align: right;
+  color: #6E4D27;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.earned-badges-section {
+  width: 100%;
+}
+
+.earned-badges-section h3 {
+  font-size: 2.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: #A67B5B;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 40px;
+}
+
+.badge-card {
+  background: #F5F5DC;
+  border-radius: 24px;
+  padding: 25px 20px;
+  box-shadow: 0 12px 32px rgba(166,123,91,0.12);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+}
+
+.badge-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 25px 50px rgba(166,123,91,0.25);
+}
+
+.badge-emoji {
+  font-size: 4rem;
+  margin-bottom: 18px;
+  filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.12));
+}
+
+.badge-info h4 {
+  font-weight: 900;
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  color: #A67B5B;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.badge-info p {
+  font-size: 1rem;
+  color: #7E6742;
+  min-height: 60px;
+  margin-bottom: 15px;
+}
+
+.badge-date {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #A67B5B;
+  opacity: 0.8;
+}
+
+.badge-card.locked {
+  filter: grayscale(90%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.badge-requirement {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #A67B5B;
+  margin-bottom: 8px;
+}
+
+.progress-bar-small {
+  height: 14px;
+  background: #C19A6B;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.12);
+  margin-top: 12px;
+}
+
+.progress-bar-small .progress-fill {
+  background: #A67B5B;
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.badge-loading,
+.badge-error,
+.no-badges {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #A67B5B;
+  text-align: center;
+  margin-top: 100px;
+  user-select: none;
+}
