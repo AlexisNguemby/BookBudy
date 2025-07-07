@@ -1,19 +1,71 @@
+
+@import './Login.css'; 
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--color-bg);
+  flex-direction: column;
+  color: var(--color-text);
+}
+
+.register-title {
+  font-size: 24px;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.register-card {
+  background-color: var(--color-card-bg);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(193, 154, 107, 0.6);
+  width: 300px;
+  color: var(--color-light);
+}
+
+.register-card input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #1f1f1f;
+  color: var(--color-light);
+  transition: border-color 0.3s ease;
+}
+
+.register-card input:focus {
+  border-color: var(--color-accent);
+  outline: none;
+  box-shadow: 0 0 5px var(--color-accent);
+}
+
 .register-button {
   width: 100%;
   padding: 8px;
-  background-color: #c4a77d;
-  color: white;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 1rem;
   transition: all 0.3s ease;
   border: 1px solid transparent;
-
+  font-weight: 600;
 }
 
 .register-button:hover {
-  background-color: white;
-  color: #c4a77d;
-  border: 1px solid #c4a77d;
+  background-color: var(--color-light);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+
+.register-message {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
 }
